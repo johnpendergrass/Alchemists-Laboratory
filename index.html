@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Alchemist's Laboratory</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="game">
+
+    <!-- ===== HEADER: title + live resource display ===== -->
+    <header id="header">
+        <h1>&#9879;&#65039; The Alchemist's Laboratory</h1>
+        <div id="resource-display">
+            <div id="essentia-count">0 Essentia</div>
+            <div id="essentia-rate">0 per second</div>
+        </div>
+    </header>
+
+    <!-- ===== MAIN: three-column layout ===== -->
+    <main id="main-content">
+
+        <!-- LEFT COLUMN: Cauldron click button + Discoveries log -->
+        <section id="clicker-panel">
+
+            <div id="cauldron-container">
+                <!-- The main click target -->
+                <div id="cauldron" onclick="clickCauldron(event)" title="Click to gather Essentia!">
+                    <!-- Animated bubbles inside the cauldron -->
+                    <div class="bubble b1"></div>
+                    <div class="bubble b2"></div>
+                    <div class="bubble b3"></div>
+                    <div class="cauldron-glow"></div>
+                    <span class="cauldron-emoji">&#9879;&#65039;</span>
+                </div>
+                <div id="click-power-display">
+                    +<span id="click-power">1</span> per click
+                </div>
+            </div>
+
+            <!-- Milestones / Discoveries log -->
+            <div id="milestones-panel">
+                <h3>&#10024; Discoveries</h3>
+                <ul id="milestones-list">
+                    <!-- Entries added dynamically by game.js -->
+                </ul>
+            </div>
+
+        </section>
+
+        <!-- MIDDLE COLUMN: Buildings (apparatus you can buy) -->
+        <section id="buildings-panel">
+            <h2>Apparatus</h2>
+            <div id="buildings-list">
+                <!-- Building cards rendered by game.js -->
+            </div>
+        </section>
+
+        <!-- RIGHT COLUMN: Upgrades (one-time purchases that boost things) -->
+        <section id="upgrades-panel">
+            <h2>Formulae</h2>
+            <div id="upgrades-list">
+                <!-- Upgrade cards rendered by game.js -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER: scrolling news ticker ===== -->
+    <footer id="footer">
+        <div id="news-ticker">
+            <span id="news-text">The Great Work begins...</span>
+        </div>
+    </footer>
+
+</div>
+
+<script src="game.js"></script>
+</body>
+</html>

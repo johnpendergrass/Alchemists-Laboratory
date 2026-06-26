@@ -1,0 +1,472 @@
+/* ============================================================
+   THE ALCHEMIST'S LABORATORY  —  style.css
+   Dark mystical theme with gold accents and glowing animations.
+   Color palette lives in CSS variables at the top for easy tweaking.
+   ============================================================ */
+
+/* --- Reset & box model ---------------------------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- Color / design tokens ------------------------------------ */
+:root {
+    --bg-dark:         #0d0a1a;   /* page background */
+    --bg-panel:        #1a1430;   /* section background */
+    --bg-panel-light:  #241d42;   /* slightly lighter panels */
+    --gold:            #c9a227;   /* primary accent */
+    --gold-light:      #f0c040;   /* bright gold for numbers */
+    --purple:          #6a3da8;   /* secondary accent */
+    --purple-light:    #9b59d0;   /* brighter purple */
+    --text-primary:    #e8d5a3;   /* warm parchment text */
+    --text-secondary:  #9080b0;   /* muted purple-grey */
+    --green-bubble:    rgba(0, 220, 100, 0.7);
+    --border-color:    #3d2f6b;   /* subtle panel borders */
+}
+
+/* --- Base layout: full-height flex column --------------------- */
+html, body {
+    height: 100%;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+#game {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+#header {
+    background: linear-gradient(135deg, #1a0f2e 0%, #2d1b5e 100%);
+    border-bottom: 2px solid var(--gold);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 25px rgba(201, 162, 39, 0.25);
+    flex-shrink: 0;
+}
+
+#header h1 {
+    font-size: 1.6rem;
+    color: var(--gold-light);
+    text-shadow: 0 0 18px rgba(201, 162, 39, 0.6);
+    letter-spacing: 2px;
+}
+
+#resource-display {
+    text-align: right;
+}
+
+#essentia-count {
+    font-size: 1.8rem;
+    color: var(--gold-light);
+    text-shadow: 0 0 12px rgba(201, 162, 39, 0.9);
+    font-weight: bold;
+    min-width: 260px;   /* prevents layout shift as numbers grow */
+}
+
+#essentia-rate {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   MAIN THREE-COLUMN LAYOUT
+   ============================================================ */
+#main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 2px;
+    background: var(--bg-dark);
+}
+
+/* Common section styles */
+section {
+    background: var(--bg-panel);
+    padding: 14px;
+    overflow-y: auto;
+}
+
+section h2 {
+    color: var(--gold);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 7px;
+    margin-bottom: 12px;
+    text-align: center;
+    letter-spacing: 3px;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+/* ============================================================
+   LEFT COLUMN — Cauldron clicker
+   ============================================================ */
+#clicker-panel {
+    width: 210px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+#cauldron-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-top: 18px;
+}
+
+/* The big clickable cauldron circle */
+#cauldron {
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(ellipse at 40% 35%, #1a5a30 0%, #0a2010 70%);
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    user-select: none;
+    box-shadow:
+        0 0 30px rgba(0, 200, 80, 0.25),
+        inset 0 0 25px rgba(0, 130, 50, 0.15);
+    transition: transform 0.05s ease, box-shadow 0.12s ease;
+}
+
+#cauldron:hover {
+    box-shadow:
+        0 0 50px rgba(0, 255, 100, 0.45),
+        inset 0 0 35px rgba(0, 180, 70, 0.25);
+}
+
+#cauldron:active {
+    transform: scale(0.93);
+}
+
+.cauldron-emoji {
+    font-size: 56px;
+    position: relative;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Glowing liquid at the base of the cauldron */
+.cauldron-glow {
+    position: absolute;
+    bottom: 0;
+    left: 10%;
+    width: 80%;
+    height: 35%;
+    background: radial-gradient(ellipse, rgba(0, 255, 100, 0.35), transparent 80%);
+    animation: pulse-glow 2.2s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes pulse-glow {
+    from { opacity: 0.35; transform: scaleX(0.9); }
+    to   { opacity: 0.75; transform: scaleX(1.05); }
+}
+
+/* Rising bubbles inside the cauldron */
+.bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, rgba(150, 255, 180, 0.9), rgba(0, 180, 80, 0.3));
+    animation: rise linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.b1 { width: 11px; height: 11px; left: 28%; bottom: 15px; animation-duration: 1.9s; animation-delay: 0s;    }
+.b2 { width:  8px; height:  8px; left: 50%; bottom: 15px; animation-duration: 2.4s; animation-delay: 0.8s;  }
+.b3 { width: 10px; height: 10px; left: 68%; bottom: 15px; animation-duration: 1.6s; animation-delay: 1.4s;  }
+
+@keyframes rise {
+    0%   { transform: translateY(0)    scale(1);   opacity: 0.8; }
+    80%  { transform: translateY(-95px) scale(0.5); opacity: 0.3; }
+    100% { transform: translateY(-110px) scale(0.1); opacity: 0;   }
+}
+
+/* Small label showing click power */
+#click-power-display {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   Floating "+N" label that appears on click
+   ============================================================ */
+.click-float {
+    position: fixed;
+    pointer-events: none;
+    color: var(--gold-light);
+    font-size: 1.15rem;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(201, 162, 39, 0.8);
+    animation: float-up 0.9s ease-out forwards;
+    z-index: 1000;
+}
+
+@keyframes float-up {
+    0%   { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-75px); }
+}
+
+/* ============================================================
+   DISCOVERIES / MILESTONES panel (bottom of left column)
+   ============================================================ */
+#milestones-panel {
+    width: 100%;
+    background: var(--bg-panel-light);
+    border-radius: 8px;
+    padding: 10px;
+    flex: 1;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+}
+
+#milestones-panel h3 {
+    color: var(--purple-light);
+    font-size: 0.82rem;
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+#milestones-list {
+    list-style: none;
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#milestones-list li {
+    padding: 3px 6px;
+    border-left: 2px solid var(--purple);
+    animation: slide-in 0.4s ease;
+}
+
+@keyframes slide-in {
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ============================================================
+   MIDDLE COLUMN — Buildings
+   ============================================================ */
+#buildings-panel {
+    flex: 1;
+    min-width: 260px;
+}
+
+.building-card {
+    background: var(--bg-panel-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 11px 12px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: border-color 0.18s, box-shadow 0.18s, opacity 0.18s;
+}
+
+/* Can't afford it — dim it */
+.building-card.locked {
+    opacity: 0.38;
+    cursor: default;
+}
+
+/* Can afford it — gold glow */
+.building-card.affordable {
+    border-color: var(--gold);
+    box-shadow: 0 0 10px rgba(201, 162, 39, 0.18);
+}
+
+.building-card:not(.locked):hover {
+    border-color: var(--gold-light);
+    box-shadow: 0 0 16px rgba(201, 162, 39, 0.3);
+}
+
+.building-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    min-width: 40px;
+    text-align: center;
+}
+
+.building-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.building-name {
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.building-desc {
+    font-size: 0.71rem;
+    color: var(--text-secondary);
+    margin: 2px 0 4px;
+    line-height: 1.3;
+}
+
+.building-owned {
+    font-size: 0.79rem;
+    color: var(--purple-light);
+}
+
+.building-cost {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.building-cost .cost-number {
+    font-size: 0.88rem;
+    color: var(--gold);
+    font-weight: bold;
+}
+
+.building-cost .production {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+/* ============================================================
+   RIGHT COLUMN — Upgrades
+   ============================================================ */
+#upgrades-panel {
+    width: 195px;
+    flex-shrink: 0;
+}
+
+/* Empty-state message */
+#upgrades-panel .empty-msg {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    text-align: center;
+    font-style: italic;
+    margin-top: 20px;
+    line-height: 1.5;
+}
+
+.upgrade-card {
+    background: var(--bg-panel-light);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    animation: slide-in 0.3s ease;
+}
+
+.upgrade-card:hover:not(.purchased):not(.too-costly) {
+    border-color: var(--purple-light);
+    box-shadow: 0 0 14px rgba(155, 89, 208, 0.3);
+}
+
+/* Already purchased — grey it out */
+.upgrade-card.purchased {
+    opacity: 0.45;
+    cursor: default;
+    border-color: #2a2a3a;
+}
+
+/* Available but can't afford yet */
+.upgrade-card.too-costly {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.upgrade-header {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 5px;
+}
+
+.upgrade-icon {
+    font-size: 1.3rem;
+}
+
+.upgrade-name {
+    font-size: 0.88rem;
+    color: var(--purple-light);
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.upgrade-desc {
+    font-size: 0.70rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    line-height: 1.35;
+}
+
+.upgrade-cost {
+    font-size: 0.80rem;
+    color: var(--gold);
+}
+
+.upgrade-cost.purchased-label {
+    color: var(--text-secondary);
+}
+
+/* ============================================================
+   FOOTER — Scrolling news ticker
+   ============================================================ */
+#footer {
+    background: #08051a;
+    border-top: 1px solid var(--border-color);
+    padding: 5px 15px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+#news-ticker {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#news-text {
+    display: inline-block;
+    color: var(--text-secondary);
+    font-style: italic;
+    font-size: 0.80rem;
+    animation: ticker-scroll 22s linear infinite;
+}
+
+@keyframes ticker-scroll {
+    0%   { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+}
+
+/* ============================================================
+   SCROLLBAR — subtle dark styling
+   ============================================================ */
+::-webkit-scrollbar          { width: 5px; }
+::-webkit-scrollbar-track    { background: var(--bg-dark); }
+::-webkit-scrollbar-thumb    { background: var(--border-color); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--purple); }
