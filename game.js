@@ -309,10 +309,11 @@ function getBuildingCost(buildingDef, currentCount) {
 // How much Essentia one click generates.
 // Base is 1, boosted by clickMultiplier from upgrades,
 // plus a small bonus (10% of PPS) for every building owned.
+// globalMultiplier is included so click power scales alongside passive income.
 function getClickPower() {
     const buildingBonus = BUILDINGS.reduce((sum, b) => {
         const bState = state.buildings[b.id];
-        return sum + bState.count * b.basePPS * bState.multiplier * 0.1;
+        return sum + bState.count * b.basePPS * bState.multiplier * state.globalMultiplier * 0.1;
     }, 0);
     return (1 + buildingBonus) * state.clickMultiplier;
 }
@@ -325,10 +326,25 @@ function getEssentiaPerSecond() {
     }, 0);
 }
 
-// Human-readable number formatter.
-// Keeps small numbers as integers; abbreviates large ones.
+// Human-readable number formatter for Essentia counts and costs.
+// Floors to integer (fractions of Essentia don't matter for spending).
 function formatNumber(n) {
     if (n < 1000)    return Math.floor(n).toLocaleString();
+    if (n < 1e6)     return (n / 1e3).toFixed(1)  + 'K';
+    if (n < 1e9)     return (n / 1e6).toFixed(2)  + ' million';
+    if (n < 1e12)    return (n / 1e9).toFixed(2)  + ' billion';
+    if (n < 1e15)    return (n / 1e12).toFixed(2) + ' trillion';
+    return n.toExponential(2);
+}
+
+// Formatter for production rates (per-second values).
+// Unlike formatNumber, this preserves decimal places for small values
+// so that "0.1/sec" and "1.8/sec" display correctly instead of "0" and "1".
+function formatRate(n) {
+    if (n === 0)     return '0';
+    if (n < 1)       return n.toFixed(2);           // 0.10, 0.50
+    if (n < 10)      return n.toFixed(1);           // 1.8, 4.0
+    if (n < 1000)    return Math.round(n).toLocaleString();
     if (n < 1e6)     return (n / 1e3).toFixed(1)  + 'K';
     if (n < 1e9)     return (n / 1e6).toFixed(2)  + ' million';
     if (n < 1e12)    return (n / 1e9).toFixed(2)  + ' billion';
@@ -455,9 +471,9 @@ function updateResourceDisplay() {
     document.getElementById('essentia-count').textContent =
         formatNumber(state.essentia) + ' Essentia';
     document.getElementById('essentia-rate').textContent =
-        formatNumber(pps) + ' per second';
+        formatRate(pps) + ' per second';
     document.getElementById('click-power').textContent =
-        formatNumber(getClickPower());
+        formatRate(getClickPower());
 }
 
 // --- Milestone log entry ---
@@ -554,7 +570,7 @@ function renderBuildings() {
             '</div>' +
             '<div class="building-cost">' +
                 '<div class="cost-number">' + formatNumber(cost) + ' Essentia</div>' +
-                '<div class="production">'  + formatNumber(pps)  + '/sec each</div>' +
+                '<div class="production">'  + formatRate(pps)  + '/sec each</div>' +
             '</div>';
 
         container.appendChild(card);
